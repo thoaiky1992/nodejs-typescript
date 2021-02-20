@@ -1,0 +1,23 @@
+version: '3'
+services:
+  psql-server:
+    container_name: 'pg-server'
+    image: 'postgres'
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=thoaiky1992
+      - POSTGRES_USER=thoaiky1992
+      - POSTGRES_PASSWORD=thoaiky1992
+    networks:
+      - backend-local-networks
+    ports:
+      - '5432:5432'
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - 9000:8080
+    networks:
+      - backend-local-networks
+networks:
+  backend-local-networks:
