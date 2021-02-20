@@ -4,6 +4,12 @@ import bodyParser from 'body-parser';
 import initialRoutes from './routes/index';
 import { Sequelize } from 'sequelize-typescript'
 import { UserModel } from './models/user.model';
+import { config } from 'dotenv';
+import { resolve } from 'path';
+
+
+config({path: resolve(__dirname,'..','.env')})
+
 export class App {
     private app: Application;
 
@@ -16,11 +22,11 @@ export class App {
     connectDB() {
         const sequelize = new Sequelize({
             dialect: 'postgres',
-            database: 'thoaiky1992',
-            username: 'thoaiky1992',
-            password: 'thoaiky1992',
+            database: process.env.MAIN_DB_NAME,
+            username: process.env.MAIN_DB_USER,
+            password: process.env.MAIN_DB_PASSWORD,
             storage: ':memory:',
-            port: 5432,
+            port: Number(process.env.MAIN_DB_PORT),
             models: [UserModel], // or [Player, Team],
         })
     } 
