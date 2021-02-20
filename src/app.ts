@@ -3,13 +3,15 @@ import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import initialRoutes from './routes/index';
 import { Sequelize } from 'sequelize-typescript'
+import { UserModel } from './models/user.model';
 export class App {
     private app: Application;
 
     constructor(private port: number | string | undefined) {
         this.app = express();
         this.middleware();
-        this.routes()
+        this.routes();
+        this.connectDB();
     }  
     connectDB() {
         const sequelize = new Sequelize({
@@ -19,7 +21,7 @@ export class App {
             password: 'thoaiky1992',
             storage: ':memory:',
             port: 5432,
-            models: [__dirname + '/*.model.ts'], // or [Player, Team],
+            models: [UserModel], // or [Player, Team],
         })
     } 
     middleware() {
