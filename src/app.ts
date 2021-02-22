@@ -1,12 +1,11 @@
 import express, { Application } from 'express';
+import { createExpressServer } from 'routing-controllers';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
-import initialRoutes from './routes/index';
-import { Sequelize } from 'sequelize-typescript'
-import { UserModel } from './models/user.model';
 import { config } from 'dotenv';
 import { resolve } from 'path';
-
+import Database from './database/config';
+import cors from 'cors';
 
 config({path: resolve(__dirname,'..','.env')})
 
@@ -20,23 +19,19 @@ export class App {
         this.connectDB();
     }  
     connectDB() {
-        const sequelize = new Sequelize({
-            dialect: 'postgres',
-            database: process.env.MAIN_DB_NAME,
-            username: process.env.MAIN_DB_USER,
-            password: process.env.MAIN_DB_PASSWORD,
-            storage: ':memory:',
-            port: Number(process.env.MAIN_DB_PORT),
-            models: [UserModel], // or [Player, Team],
-        })
+        new Database();
     } 
     middleware() {
         this.app.use(morgan('dev'))
         this.app.use(bodyParser.json());
-        this.app.use(bodyParser.urlencoded({extended:false}));
+        this.app.use(bodyParser.urlencoded({extended:true}));
+        this.app.use(cors())
     }
     routes() {
-        this.app.use('/api',initialRoutes);
+        this.app = createExpressServer({
+            routePrefix: 'api',
+            controllers: [__dirname + '/controllers/*.ts']
+        })
     }
     async listen() {
         await this.app.listen(this.port || process.env.PORT || 3000);
