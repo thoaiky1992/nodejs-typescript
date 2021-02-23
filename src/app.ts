@@ -10,7 +10,7 @@ import cors from 'cors';
 config({path: resolve(__dirname,'..','.env')})
 
 export class App {
-    private app: Application;
+    public app: Application;
 
     constructor(private port: number | string | undefined) {
         this.app = express();
@@ -30,6 +30,9 @@ export class App {
     routes() {
         this.app = createExpressServer({
             routePrefix: 'api',
+            cors: {
+              origin: '*'  
+            },
             controllers: [__dirname + '/controllers/*.ts']
         })
     }

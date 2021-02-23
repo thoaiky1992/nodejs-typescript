@@ -10,9 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = require("./app");
+const dotenv_1 = require("dotenv");
+dotenv_1.config({ path: __dirname + '/../.env' });
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        const app = new app_1.App(3000);
+        const app = new app_1.App(process.env.PORT);
         yield app.listen();
     });
 }

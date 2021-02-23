@@ -1,4 +1,4 @@
-import { Get, Post, Body, Params, Put, Param, QueryParams} from 'routing-controllers';
+import { Get, Post, Body, Params, Put, Param, QueryParams, Delete} from 'routing-controllers';
 import { Model } from "sequelize-typescript";
 import { UserDto } from '../dto/user/user.dto';
 
@@ -10,7 +10,7 @@ export default class CrudController <T extends Model<T>> {
   }
   @Get()
   getMany(@QueryParams() queryPrams:any) {
-    return this._service.getMany(queryPrams);
+    return this._service.getMany(queryPrams)
   }
 
   @Get('/:id')
@@ -25,11 +25,11 @@ export default class CrudController <T extends Model<T>> {
 
   @Put('/:id')
   updateOne(@Params() id:number, @Body() dto:any) {
-    return this._service.updateOne();
+    return this._service.updateOne(id,dto);
   }
 
-  @Put()
-  deleteOne(@Params() id:number, @Body() dto:any) {
-    return this._service.deleteOne();
+  @Delete('/:id')
+  deleteOne(@Params() id:number) {
+    return this._service.deleteOne(id);
   }
 }
