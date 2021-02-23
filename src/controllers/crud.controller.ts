@@ -1,24 +1,35 @@
-import { Get, Post, Body, JsonController, Controller, UseBefore} from 'routing-controllers';
-import { Model, Sequelize } from "sequelize-typescript";
-import { UserModel } from '../models/user.model';
+import { Get, Post, Body, Params, Put, Param, QueryParams} from 'routing-controllers';
+import { Model } from "sequelize-typescript";
 import { UserDto } from '../dto/user/user.dto';
 
-interface InterfaceCrudController<T extends Model<T>> {
-  createOne: (dto:any) => Promise<any>
-}
-export default class CrudController <T extends Model<T>> implements InterfaceCrudController<UserModel>{
-  private _model: typeof Model & Model;
-  constructor(model: any) {
-    this._model = model;
+
+export default class CrudController <T extends Model<T>> {
+  private _service: any;
+  constructor(service: any) {
+    this._service = service;
   }
   @Get()
-  async getMany(): Promise<T[]> {
-    const users = await this._model.findAll();
-    return JSON.parse(JSON.stringify(users));
+  getMany(@QueryParams() queryPrams:any) {
+    return this._service.getMany(queryPrams);
   }
+
+  @Get('/:id')
+  getOne(@Param('id') id:number ) { 
+    return this._service.getOne(id);
+  }
+
   @Post()
-  async createOne(@Body() dto: UserDto): Promise<any> { 
-    const user = await this._model.create(dto);
-    return JSON.parse(JSON.stringify(user));
+  createOne(@Body() dto: UserDto) { 
+    return this._service.createOne(dto);
+  }
+
+  @Put('/:id')
+  updateOne(@Params() id:number, @Body() dto:any) {
+    return this._service.updateOne();
+  }
+
+  @Put()
+  deleteOne(@Params() id:number, @Body() dto:any) {
+    return this._service.deleteOne();
   }
 }
