@@ -4,7 +4,7 @@ import CrudController from './crud.controller';
 import UserService from '../services/user.service';
 import AuthMiddleware from '../middleware/authenticate';
 
-@UseBefore(AuthMiddleware)
+// @UseBefore(AuthMiddleware)
 @JsonController('/users')
 export class UserController extends CrudController<UserModel> {
   constructor(){

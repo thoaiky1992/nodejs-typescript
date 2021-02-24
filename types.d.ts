@@ -1,3 +1,1 @@
-declare module 'socket.io' {
-  export = socketIO;
- }
+declare module "socket.io";

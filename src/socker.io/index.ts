@@ -1,16 +1,18 @@
-import socketIO from 'socket.io';
+import io from 'socket.io';
 import { config } from 'dotenv';
 import { resolve } from 'path';
 import jwt from 'jsonwebtoken'
 import { App } from '../app';
 
 config({path: resolve(__dirname, '..', '..', '.env')});
-export default class SocketIo {
-  public _server: socketIO.Server = socketIO((new App(3000)).app);
-  constructor() {
-    this.connect(); 
+export default class SocketIoJwt {
+  public _server:any;
+  constructor(app:any) {
+    this._server = io(app);
+    this.configAuthenticateJwt(); 
+    this.connect()
   }
-  connect() {
+  configAuthenticateJwt() {
     this._server.use((socket: any, next: any) => {
       if(socket.handshake?.query && socket.handshake?.query?.token) {
         const token = String(socket.handshake?.query?.token);
@@ -21,4 +23,10 @@ export default class SocketIo {
       }
     })
   }
+  connect() {
+    this._server.on('connection', (socket:any) => {
+      console.log(socket);
+    })
+  }
+  
 }
