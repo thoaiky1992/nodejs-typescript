@@ -7,8 +7,6 @@ import { resolve } from 'path';
 import Database from './database/config';
 import cors from 'cors';
 import SocketIoJwt from './socker.io';
-import { createServer } from "http";
-import { Server, Socket } from "socket.io";
 
 
 config({path: resolve(__dirname,'..','.env')})
@@ -25,11 +23,7 @@ export class App {
         this.connectDB();
     }  
     connectSocketIo() {
-        const io = new Server(this.httpServer);
-        io.on("connection",(socket:any) => {
-            console.log(socket);
-            socket.on("test",(data:any) => console.log(data));
-        })
+        new SocketIoJwt();
     }
     connectDB() {
         new Database();
@@ -48,11 +42,9 @@ export class App {
             },
             controllers: [__dirname + '/controllers/*.ts']
         })
-        this.httpServer = createServer(this.app);
     }
     async listen() {
-        this.httpServer.listen(3000)
-        // await this.app.listen(this.port || process.env.PORT || 3000);
+        await this.app.listen(this.port || process.env.PORT || 3000);
         console.log('Server on port : ', this.port);  
     }
 }
