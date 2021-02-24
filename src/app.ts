@@ -6,7 +6,7 @@ import { config } from 'dotenv';
 import { resolve } from 'path';
 import Database from './database/config';
 import cors from 'cors';
-import SocketIoJwt from './socker.io';
+import { SocketIoServer } from './socker.io/index';
 
 
 config({path: resolve(__dirname,'..','.env')})
@@ -23,7 +23,8 @@ export class App {
         this.connectDB();
     }  
     connectSocketIo() {
-        new SocketIoJwt();
+        SocketIoServer.middleware();
+        SocketIoServer.connect();
     }
     connectDB() {
         new Database();
@@ -44,7 +45,9 @@ export class App {
         })
     }
     async listen() {
-        await this.app.listen(this.port || process.env.PORT || 3000);
-        console.log('Server on port : ', this.port);  
+        await this.app.listen(this.port || process.env.PORT || 3000, () => {
+            console.log('Server on port : ', this.port);
+        });
+          
     }
 }

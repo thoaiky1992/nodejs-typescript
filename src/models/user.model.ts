@@ -1,6 +1,6 @@
-import {Table, Column, Model, DefaultScope, BeforeCreate} from 'sequelize-typescript';
+import {Table, Column, Model, DefaultScope, BeforeCreate, AfterCreate} from 'sequelize-typescript';
 import bcrypt from 'bcrypt';
-
+import { SocketIoServer } from '../socker.io/index';
 @DefaultScope(() => ({
     attributes: {
         exclude: ['password']
@@ -27,6 +27,11 @@ export class UserModel extends Model<UserModel> {
     static hashPassword(instance: UserModel) {
         const salt = bcrypt.genSaltSync(instance.saltRounds);
         instance.password  = bcrypt.hashSync(instance.password, salt);
+    }
+
+    @AfterCreate
+    static sendNotify(instance: UserModel) {
+        SocketIoServer._server.emit("test", instance)
     }
     
 }
